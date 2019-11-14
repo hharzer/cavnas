@@ -15,7 +15,7 @@ const HtmlTreeView = styled.div`
 const HtmlTree = props => { 
   return (
     <HtmlTreeView>
-      <JSONTree data={props.tree}/>
+      <JSONTree invertTheme={true} data={props.tree}/>
     </HtmlTreeView>
   )
 }

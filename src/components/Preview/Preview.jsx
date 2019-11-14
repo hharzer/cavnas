@@ -1,10 +1,11 @@
 'use strict';
-import React from 'react';
-import styled from "styled-components";
-import unified from 'unified'
-import rehype2react from 'rehype-react'
+import React, { useEffect, useState } from 'react';
 import {connect} from 'react-redux'
-import  stringify  from 'rehype-stringify';
+import styled from "styled-components";
+import unified from 'unified';
+import createStream from 'unified-stream';
+import parse from 'rehype-dom-parse';
+import stringify from 'rehype-dom-stringify';
 
 const PreviewWrapper = styled.div`
   height:100%;
@@ -15,10 +16,22 @@ const PreviewWrapper = styled.div`
 
 
 const Preview = props => { 
-  const processor = unified().use(rehype2react)
+  const processor = unified().use(parse).use(stringify)
+  const [htmlRender, setHtmlRender] = useState('')
+  useEffect(
+    ()=>{
+        const {tree}=props
+        if (tree && typeof tree ==="object") {
+            processor.run(tree).then(val=>{
+              setHtmlRender(JSON.stringify(val))
+            })
+        }
+    },[props]
+  )
+
   return (
     <PreviewWrapper>
-      {("tree" in props) ? processor.run(props.tree) : "Select html"}
+      <p>{htmlRender}</p>
     </PreviewWrapper>
   )
 }

@@ -34,7 +34,11 @@ const StatusBar = styled.div`
 const DocumentPanel = styled.div`
    {
 
-    grid-area: DocumentPanel;
+    //grid-area: DocumentPanel;
+    display: grid;
+    //grid-template-rows: 50% 50%;
+    height:100%;
+    overflow:auto;
   }
 `;
 

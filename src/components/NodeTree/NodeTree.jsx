@@ -1,7 +1,8 @@
 import React from 'react';
 import Styled from "./styled";
 import { Tree } from 'antd';
-
+import _ from 'lodash'
+import {connect} from 'react-redux'
 const data = {
   key: "0",
   title: "root",
@@ -17,14 +18,24 @@ const { TreeNode } = Tree;
 const NodeTree =(props) => { 
 
   const renderNodes=(nodes) => {
-    return <TreeNode title={nodes.title} key={nodes.key}>{nodes.children? nodes.children.map(children=>renderNodes(children)):undefined}</TreeNode>
-  }
+    if (!nodes) return <TreeNode title="Waiting" key="000"/>
+
+    const {type, tagName, properties, children, value} = nodes
+    console.log(children)
+    switch (type){
+    case "element":
+      case "root":
+      return <TreeNode title={tagName} key={_.uniqueId()}>{children.map((_children,index)=>renderNodes(_children))}</TreeNode>
+    case "text":
+    default:
+      return <TreeNode title={type} key={_.uniqueId()}>{value}</TreeNode>
+
+  }}
 
   return (
-    <Tree checkable >
-      {renderNodes(data)}
+    <Tree selectable draggable onSelect={evt=> {console.log(evt)}} >
+      {renderNodes(props.tree)}
     </Tree>
-  )
-}
-
-export default NodeTree;
+  )}
+  const mapStateToProps = state => ({ tree: state.tree })
+  export default connect(mapStateToProps)(NodeTree)
